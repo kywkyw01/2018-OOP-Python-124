@@ -9,3 +9,4 @@ class Example(QWidget) :
         self.initUI()
     def initUI(self) :
         pass
+
