@@ -1,3 +1,5 @@
+# 출처 : https://www.youtube.com/watch?v=LSFaZ2fFofk&index=3&list=PL1eLKSeW1Baj72go6l3gg4C8TXRNUBdMo
+
 import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow, QAction, QMenu
 from PyQt5.QtCore import QCoreApplication
