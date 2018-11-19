@@ -1,6 +1,8 @@
 # pip3 install -U beautifulsoup4
 # pip3 install -U requests
-
+'''
+https://github.com/kadragon/oop_python_ex/blob/master/student_result/04_parsing/parsing_29.py
+'''
 import requests  # 웹 접속 관련 라이브러리
 from bs4 import BeautifulSoup as bs  # parsing library
 import tkinter
