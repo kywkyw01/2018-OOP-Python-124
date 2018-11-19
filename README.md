@@ -1,4 +1,4 @@
-# 2018-2 객체지향 프로그래밍 프로젝트 - **{124}**
+# 2018-2 객체지향 프로그래밍 프로젝트 - 124
 구성원: 2-2 김단은 | 2-3 김연우 | 2-5 방준형
 
 ## 1. 주제
@@ -38,7 +38,3 @@ SASA인을 위한 일정 관리 프로그램 제작
 황창환 만세
 황창환 만세 황창환 만세
 <hr>
-
-#### readme 작성관련 참고하기 [바로가기](https://heropy.blog/2017/09/30/markdown/)
-
-#### 예시 계획서 [[예시 1]](https://docs.google.com/document/d/1hcuGhTtmiTUxuBtr3O6ffrSMahKNhEj33woE02V-84U/edit?usp=sharing) | [[예시 2]](https://docs.google.com/document/d/1FmxTZvmrroOW4uZ34Xfyyk9ejrQNx6gtsB6k7zOvHYE/edit?usp=sharing)
