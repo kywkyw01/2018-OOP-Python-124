@@ -28,6 +28,7 @@ SASA인을 위한 일정 관리 프로그램 제작
 - pyqt5
 - datetime 라이브러리
 - json 라이브러리
+- qt- designer
 
 ## 8. **분업 계획**
 - GUI- 김연우, 김단은
