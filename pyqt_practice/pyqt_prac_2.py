@@ -1,3 +1,5 @@
+# 출처 : https://www.youtube.com/watch?v=3k2QPRoJqoI&index=2&list=PL1eLKSeW1Baj72go6l3gg4C8TXRNUBdMo
+
 import sys
 from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QMessageBox
 from PyQt5.QtCore import QCoreApplication
