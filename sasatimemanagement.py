@@ -11,3 +11,5 @@ for i in todaysc.sctab:
         print(j, end=" ")
     print("")
 tomorrow=sctable()
+
+hwtable=[]
