@@ -11,14 +11,11 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1082, 633)
+        MainWindow.resize(1125, 633)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
-        self.refresh = QtWidgets.QPushButton(self.centralwidget)
-        self.refresh.setGeometry(QtCore.QRect(980, 10, 93, 28))
-        self.refresh.setObjectName("refresh")
         self.time_table = QtWidgets.QTableWidget(self.centralwidget)
-        self.time_table.setGeometry(QtCore.QRect(10, 10, 961, 561))
+        self.time_table.setGeometry(QtCore.QRect(10, 10, 981, 561))
         self.time_table.setShowGrid(True)
         self.time_table.setGridStyle(QtCore.Qt.DashDotLine)
         self.time_table.setWordWrap(True)
@@ -108,9 +105,18 @@ class Ui_MainWindow(object):
         self.time_table.setItem(0, 0, item)
         self.time_table.horizontalHeader().setVisible(True)
         self.time_table.horizontalHeader().setCascadingSectionResizes(True)
+        self.time_table.horizontalHeader().setDefaultSectionSize(125)
+        self.time_table.horizontalHeader().setMinimumSectionSize(60)
+        self.time_table.verticalHeader().setDefaultSectionSize(80)
+        self.pushButton = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButton.setGeometry(QtCore.QRect(1010, 10, 93, 28))
+        self.pushButton.setObjectName("pushButton")
+        self.pushButton_2 = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButton_2.setGeometry(QtCore.QRect(1010, 60, 93, 28))
+        self.pushButton_2.setObjectName("pushButton_2")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 1082, 26))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 1125, 26))
         self.menubar.setObjectName("menubar")
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
@@ -118,12 +124,13 @@ class Ui_MainWindow(object):
         MainWindow.setStatusBar(self.statusbar)
 
         self.retranslateUi(MainWindow)
+        self.pushButton.clicked.connect(self.time_table.scrollToTop)
+        self.pushButton_2.clicked.connect(self.time_table.scrollToBottom)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.refresh.setText(_translate("MainWindow", "Refresh"))
         self.time_table.setSortingEnabled(False)
         item = self.time_table.verticalHeaderItem(0)
         item.setText(_translate("MainWindow", "1교시"))
@@ -170,6 +177,8 @@ class Ui_MainWindow(object):
         __sortingEnabled = self.time_table.isSortingEnabled()
         self.time_table.setSortingEnabled(False)
         self.time_table.setSortingEnabled(__sortingEnabled)
+        self.pushButton.setText(_translate("MainWindow", "Top"))
+        self.pushButton_2.setText(_translate("MainWindow", "Bottom"))
 
 
 if __name__ == "__main__":
