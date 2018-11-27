@@ -5,8 +5,13 @@
 # Created by: PyQt5 UI code generator 5.11.3
 #
 # WARNING! All changes made in this file will be lost!
+from typing import Any, Callable
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+
+Matrix = [['0']*7 for i in range(14)]
+
+
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -129,7 +134,7 @@ class Ui_MainWindow(object):
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
-        _translate = QtCore.QCoreApplication.translate
+        _translate: Callable[[Any, Any, Any, int], str] = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.time_table.setSortingEnabled(False)
         item = self.time_table.verticalHeaderItem(0)
@@ -177,8 +182,11 @@ class Ui_MainWindow(object):
         __sortingEnabled = self.time_table.isSortingEnabled()
         self.time_table.setSortingEnabled(False)
         # 아래 두 칸에서 위치 지정 -> 지정된 위치에 sting 혈태로 출력됨!!!
-        item = self.time_table.item(0, 0)
-        item.setText(_translate("MainWindow", "dedededede, ddsadsadsadsa"))
+
+        for x in range(7):
+            for y in range(14):
+                It = self.time_table.item(x , y)
+                It.setText(_translate("MainWindow",Matrix[x][y]))
 
         self.time_table.setSortingEnabled(__sortingEnabled)
         self.pushButton.setText(_translate("MainWindow", "Top"))
