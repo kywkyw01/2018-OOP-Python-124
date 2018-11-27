@@ -173,6 +173,7 @@ class Ui_MainWindow(object):
         self.pushButton_2.setText(_translate("MainWindow", "Bottom"))
 
 # top bottom 기능 추가
+# 배열을 받아서 연산? 추가 점 
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
