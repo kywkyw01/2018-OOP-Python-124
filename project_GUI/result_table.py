@@ -1,11 +1,3 @@
-# -*- coding: utf-8 -*-
-
-# Form implementation generated from reading ui file 'result_table_t.ui'
-#
-# Created by: PyQt5 UI code generator 5.11.3
-#
-# WARNING! All changes made in this file will be lost!
-
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 class Ui_MainWindow(object):
@@ -176,14 +168,12 @@ class Ui_MainWindow(object):
         item.setText(_translate("MainWindow", "일"))
         __sortingEnabled = self.time_table.isSortingEnabled()
         self.time_table.setSortingEnabled(False)
-        item = self.time_table.item(0, 0)
-        pppp ="fdsfdafdafdfsa"
-        item.setText(_translate("MainWindow", pppp))
         self.time_table.setSortingEnabled(__sortingEnabled)
         self.pushButton.setText(_translate("MainWindow", "Top"))
         self.pushButton_2.setText(_translate("MainWindow", "Bottom"))
 
-
+# top bottom 기능 추가
+# 배열을 받아서 연산? 추가 점 
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
@@ -192,4 +182,3 @@ if __name__ == "__main__":
     ui.setupUi(MainWindow)
     MainWindow.show()
     sys.exit(app.exec_())
-

@@ -20,7 +20,7 @@ class Exam(QWidget):
         print('tab closed')  # 탭 닫기 시도시에 'tab closed'라는 메시지 출력
         ans = QMessageBox.question(self, 'Quit.', 'Quit?',
         QMessageBox.Yes | QMessageBox.No, QMessageBox.Yes)  # 종료 키를 눌렀을 때 재확인 창 출력. Yes 선택시 ans == QMessageBox.Yes
-        if ans is QMessageBox.Yes:
+        if ans == QMessageBox.Yes:
             QCloseEvent.accept()
         else:
             QCloseEvent.ignore()
