@@ -1,7 +1,5 @@
 import sys
 from PyQt5.QtWidgets import *
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QFont
 
 project_list = []
 
@@ -61,7 +59,7 @@ class MyWindow(QWidget):
 
 
     def setupUI(self):
-        self.setGeometry(0  , 0 ,1200 ,600)
+        self.setGeometry(0  , 0 ,1500 ,900)
         self.setWindowTitle("SASA smart scheduler")
 
         self.groupbox = QGroupBox("Project Board")
@@ -78,10 +76,6 @@ class MyWindow(QWidget):
 #       self.table_widget.resizeRowsToContents()  #아이템 길이에 맞춰서 크기 조정
         self.table_widget.setEditTriggers(QAbstractItemView.NoEditTriggers)  #표를 임의로 수정 불가하게 만듬
 
-        self.title= QLabel()
-        self.title.setText("SASA Smart Scheduler")
-        self.title.setAlignment(Qt.AlignCenter)
-        
 
 
 
@@ -100,9 +94,7 @@ class MyWindow(QWidget):
 
         #레이아웃 성정부분(오른쪽)
         right_layout = QVBoxLayout()
-        right_layout.addWidget(self.title)
         right_layout.addWidget(self.table_widget)
-
 
         #레이아웃 설정부분(전체)
         total_layout = QHBoxLayout()
