@@ -1,7 +1,7 @@
 import sys
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QFont
+from PyQt5 import QtGui
 
 project_list = []
 
@@ -64,6 +64,15 @@ class MyWindow(QWidget):
         self.setGeometry(0  , 0 ,1200 ,600)
         self.setWindowTitle("SASA smart scheduler")
 
+        self.title = QLabel()
+        self.title.setText("SASA Smart Scheduler")
+        self.title.setAlignment(Qt.AlignCenter)
+        font_title = QtGui.QFont()
+        font_title.setBold(True)
+        font_title.setWeight(100)
+        self.title.setFont(font_title)
+
+
         self.groupbox = QGroupBox("Project Board")
         self.add_label = QLabel()
         self.add_button = QPushButton("ADD Project")
@@ -78,10 +87,7 @@ class MyWindow(QWidget):
 #       self.table_widget.resizeRowsToContents()  #아이템 길이에 맞춰서 크기 조정
         self.table_widget.setEditTriggers(QAbstractItemView.NoEditTriggers)  #표를 임의로 수정 불가하게 만듬
 
-        self.title= QLabel()
-        self.title.setText("SASA Smart Scheduler")
-        self.title.setAlignment(Qt.AlignCenter)
-        
+
 
 
 
@@ -100,18 +106,20 @@ class MyWindow(QWidget):
 
         #레이아웃 성정부분(오른쪽)
         right_layout = QVBoxLayout()
-        right_layout.addWidget(self.title)
         right_layout.addWidget(self.table_widget)
 
 
-        #레이아웃 설정부분(전체)
-        total_layout = QHBoxLayout()
-        total_layout.addLayout(left_layout)
-        total_layout.addLayout(right_layout)
-        total_layout.setStretchFactor(left_layout,1)
-        total_layout.setStretchFactor(right_layout,4)
+        #레이아웃 설정부분(아래)
+        under_layout = QHBoxLayout()
+        under_layout.addLayout(left_layout)
+        under_layout.addLayout(right_layout)
+        under_layout.setStretchFactor(left_layout,1)
+        under_layout.setStretchFactor(right_layout,4)
 
 
+        total_layout = QVBoxLayout()
+        total_layout.addWidget(self.title)
+        total_layout.addLayout(under_layout)
         self.setLayout(total_layout)
 
         #기능
