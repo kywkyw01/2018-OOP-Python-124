@@ -1,8 +1,10 @@
+# -*- coding:utf-8 -*-
 import sys
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5 import QtGui
 
+task_list = []
 
 #계획 추가 창 표시
 class InputProject(QDialog):
@@ -83,30 +85,65 @@ class MyTable(QWidget):
     @pyqtSlot()
     def __add_clicked(self):
         row_count = self.table.rowCount()
-        # print(row_count)
         self.table.setRowCount(row_count+1)
         ckbox = QCheckBox()
         self.table.setCellWidget(row_count, 0, ckbox)
 
         add = InputProject()
-        add.exec_()
+        add.exec()
         self.table.setItem(row_count, 1, QTableWidgetItem(add.name))
         self.table.setItem(row_count, 2, QTableWidgetItem(add.SpendTime))
         self.table.setItem(row_count, 3, QTableWidgetItem(str(add.deadline[0]) + '년 ' + str(add.deadline[1]) + '월 ' + str(add.deadline[2]) + '일'))
+        task_list.append([add.name, add.SpendTime, [int(add.deadline[0]), int(add.deadline[1]), int(add.deadline[2])]])
+        print(task_list)
+        # print(self.table.item(0, 2).text()[0:2])
         return
 
-    @pyqtSlot()
+
     def __del_clicked(self):
         row_count = self.table.rowCount()
+        chk_count = 0
         rem_list = []
-        for idx in range(row_count):
-            item = self.table.cellWidget(idx, 0)
-            if item.isChecked():
-                rem_list.append(idx)
-        rem_list.sort()
-        rem_list.reverse()
-        for idx in rem_list:
-            self.table.removeRow(idx)
+        if row_count != 0:
+            for idx in range(row_count):
+                item = self.table.cellWidget(idx, 0)
+                if item.isChecked():
+                    rem_list.append(idx)
+            if len(rem_list) != 0:
+                rem_list.sort()
+                rem_list.reverse()
+                for idx in range(len(rem_list)):
+                    self.table.removeRow(rem_list[idx])
+                    chk_count += 1
+        print(rem_list)
+        row_count = self.table.rowCount()
+        if row_count and chk_count:
+            global task_list
+            task_list = []
+            print(self.table.item(0, 3).text()[8])
+            for idx in range(row_count):
+                if self.table.item(idx, 3).text()[7] == '월':
+                    if self.table.item(idx, 3).text()[10] == '일':
+                        task_list.append([self.table.item(idx, 1).text(), self.table.item(idx, 2).text(),
+                                          [int(self.table.item(idx, 3).text()[0:4]), int(self.table.item(idx, 3).text()[6]),
+                                           int(self.table.item(idx, 3).text()[9])]])
+                    else:
+                        task_list.append([self.table.item(idx, 1).text(), self.table.item(idx, 2).text(),
+                                          [int(self.table.item(idx, 3).text()[0:4]), int(self.table.item(idx, 3).text()[6]),
+                                           int(self.table.item(idx, 3).text()[9:11])]])
+                else:
+                    if self.table.item(idx, 3).text()[11] == '일':
+                        task_list.append([self.table.item(idx, 1).text(), self.table.item(idx, 2).text(),
+                                          [int(self.table.item(idx, 3).text()[0:4]),
+                                           int(self.table.item(idx, 3).text()[6:8]),
+                                           int(self.table.item(idx, 3).text()[10])]])
+                    else:
+                        task_list.append([self.table.item(idx, 1).text(), self.table.item(idx, 2).text(),
+                                          [int(self.table.item(idx, 3).text()[0:4]),
+                                           int(self.table.item(idx, 3).text()[6:8]),
+                                           int(self.table.item(idx, 3).text()[10:12])]])
+
+
 
 # 메인 윈도우
 class MyWindow(QWidget):
@@ -165,4 +202,4 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     mywindow = MyWindow()
     mywindow.show()
-    app.exec_()
+    app.exec()
