@@ -95,7 +95,7 @@ class MyTable(QWidget):
         self.table.setItem(row_count, 2, QTableWidgetItem(add.SpendTime))
         self.table.setItem(row_count, 3, QTableWidgetItem(str(add.deadline[0]) + '년 ' + str(add.deadline[1]) + '월 ' + str(add.deadline[2]) + '일'))
         task_list.append([add.name, add.SpendTime, [int(add.deadline[0]), int(add.deadline[1]), int(add.deadline[2])]])
-        print(task_list)
+        # print(task_list)
         # print(self.table.item(0, 2).text()[0:2])
         return
 
@@ -115,12 +115,12 @@ class MyTable(QWidget):
                 for idx in range(len(rem_list)):
                     self.table.removeRow(rem_list[idx])
                     chk_count += 1
-        print(rem_list)
+        # print(rem_list)
         row_count = self.table.rowCount()
         if row_count and chk_count:
             global task_list
             task_list = []
-            print(self.table.item(0, 3).text()[8])
+            # print(self.table.item(0, 3).text()[8])
             for idx in range(row_count):
                 if self.table.item(idx, 3).text()[7] == '월':
                     if self.table.item(idx, 3).text()[10] == '일':
