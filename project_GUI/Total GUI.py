@@ -19,6 +19,9 @@ class InputProject(QDialog):
         self.SpendTime = None
         self.deadline = None
 
+
+
+
     def setupUI(self):
         self.setGeometry(1100, 200, 300, 200)
         self.setWindowTitle("ADD Project")
@@ -77,7 +80,6 @@ class MyWindow(QWidget):
         self.add_label = QLabel()
         self.add_button = QPushButton("ADD Project")
         self.del_button = QPushButton("DEL Project")
-
 
 
         self.table_widget =  QTableWidget(14,7)

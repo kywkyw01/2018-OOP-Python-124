@@ -67,6 +67,7 @@ class MyWindow(QWidget):
         self.setGeometry(0  , 0 ,1200 ,600)
         self.setWindowTitle("SASA smart scheduler")
 
+        #위쪽 부분 레이아웃
         self.title = QLabel()
         self.title.setText("SASA Smart Scheduler")
         self.title.setAlignment(Qt.AlignCenter)
@@ -75,13 +76,14 @@ class MyWindow(QWidget):
         font_title.setWeight(100)
         self.title.setFont(font_title)
 
-
+        #오른쪽 부분 레이아웃
         self.groupbox = QGroupBox("Project Board")
         self.add_label = QLabel()
         self.add_button = QPushButton("ADD Project")
         self.del_button = QPushButton("DEL Project")
 
 
+        #중간 부분 레이아웃
         self.table_widget =  QTableWidget(14,7)
         self.table_widget.setHorizontalHeaderLabels(["월","화","수","목","금","토","일"])
         self.table_widget.setVerticalHeaderLabels(["1교시","2교시","3교시","4교시","5교시","6교시","7교시","8교시","9교시","1자_1","1자_2","2자_1","2자_2","새벽"])
@@ -89,9 +91,13 @@ class MyWindow(QWidget):
 #       self.table_widget.resizeRowsToContents()  #아이템 길이에 맞춰서 크기 조정
         self.table_widget.setEditTriggers(QAbstractItemView.NoEditTriggers)  #표를 임의로 수정 불가하게 만듬
 
+        #오른쪽 부분 레이아웃
+        self.SignIn = QGroupBox('Sign In')
 
 
-
+        #레이아웃 설정부분(Sign in)
+        SignIn_layout = QGridLayout()
+        self.SignIn.setLayout(SignIn_layout)
 
         #레이아웃 설정부분(Groupbox)
         groupbox_layout = QVBoxLayout()
@@ -106,18 +112,22 @@ class MyWindow(QWidget):
         left_layout.addWidget(self.groupbox)
 
 
-        #레이아웃 성정부분(오른쪽)
-        right_layout = QVBoxLayout()
-        right_layout.addWidget(self.table_widget)
+        #레이아웃 성정부분(중간)
+        middle_layout = QVBoxLayout()
+        middle_layout.addWidget(self.table_widget)
 
+        #레이아웃 설정부분(오른쪽)
+        right_layout = QVBoxLayout()
+        right_layout.addWidget(self.SignIn)
 
         #레이아웃 설정부분(아래)
         under_layout = QHBoxLayout()
         under_layout.addLayout(left_layout)
+        under_layout.addLayout(middle_layout)
         under_layout.addLayout(right_layout)
-        under_layout.setStretchFactor(left_layout,1)
-        under_layout.setStretchFactor(right_layout,4)
-
+        under_layout.setStretchFactor(left_layout,2)
+        under_layout.setStretchFactor(middle_layout,8)
+        under_layout.setStretchFactor(right_layout,1)
 
         total_layout = QVBoxLayout()
         total_layout.addWidget(self.title)
