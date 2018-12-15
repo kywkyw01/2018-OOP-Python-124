@@ -1,5 +1,7 @@
 # -*- coding:utf-8 -*-
 import sys
+
+import self as self
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5 import QtGui
@@ -245,15 +247,6 @@ class MyWindow(QWidget):
 
         table = MyTable()
 
-        #사용자 표시
-        self.profile = QLabel()
-        self.profile.setText("현재 사용자 : %s님"%(ProfileData[0]))
-        self.profile.setAlignment(Qt.AlignCenter)
-        font_profile = QtGui.QFont()
-        font_profile.setBold(True)
-        font_profile.setWeight(100)
-        self.profile.setFont(font_profile)
-
 
         #레이아웃 설정부분(Groupbox)
         groupbox_layout = QVBoxLayout()
@@ -264,7 +257,6 @@ class MyWindow(QWidget):
 
         # 레이아웃 설정부분(왼쪽)
         left_layout = QVBoxLayout()
-        left_layout.addWidget(self.profile)
         left_layout.addWidget(self.groupbox)
 
         #레이아웃 성정부분(오른쪽)
@@ -284,4 +276,4 @@ class MyWindow(QWidget):
         self.setLayout(total_layout)
 
 if __name__ == "__main__":
-    DataAbsence(0)
+    DataAbsence(1)
