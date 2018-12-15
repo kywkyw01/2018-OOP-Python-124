@@ -8,7 +8,7 @@ from PyQt5 import QtGui
 task_list = []
 ProfileData = []
 
-def Right(ID,PS):
+def Right(ID,PS):  # 구현해주세요!! 달빛학사 아이디 비번 확인함수
     return 1
 
 #시작전에 login logout
@@ -31,9 +31,10 @@ def DataAbsence(exist):     #exist==1 로그인 절차 x     exist==0 로그인 
                 Login = False
             else:
                 Login = True
+                ProfileData = []
 
         app = QApplication(sys.argv)
-        
+
         mywindow = MyWindow()
         mywindow.show()
         app.exec()
