@@ -8,7 +8,7 @@ from PyQt5 import QtGui
 task_list = []
 ProfileData = []
 
-def Right(ID,PS):  # 구현해주세요!! 달빛학사 아이디 비번 확인함수
+def Right(ID,PS):         # 구현해주세요!! 달빛학사 아이디 비번 확인함수
     return 1
 
 #시작전에 login logout
@@ -20,6 +20,7 @@ def DataAbsence(exist):     #exist==1 로그인 절차 x     exist==0 로그인 
         app.exec()
 
     else:
+        global ProfileData
         Login = True
         while Login:
             ap = QApplication(sys.argv)
@@ -34,7 +35,6 @@ def DataAbsence(exist):     #exist==1 로그인 절차 x     exist==0 로그인 
                 ProfileData = []
 
         app = QApplication(sys.argv)
-
         mywindow = MyWindow()
         mywindow.show()
         app.exec()
@@ -245,6 +245,14 @@ class MyWindow(QWidget):
 
         table = MyTable()
 
+        #사용자 표시
+        self.profile = QLabel()
+        self.profile.setText("현재 사용자 : %s님"%(ProfileData[0]))
+        self.profile.setAlignment(Qt.AlignCenter)
+        font_profile = QtGui.QFont()
+        font_profile.setBold(True)
+        font_profile.setWeight(100)
+        self.profile.setFont(font_profile)
 
 
         #레이아웃 설정부분(Groupbox)
@@ -256,6 +264,7 @@ class MyWindow(QWidget):
 
         # 레이아웃 설정부분(왼쪽)
         left_layout = QVBoxLayout()
+        left_layout.addWidget(self.profile)
         left_layout.addWidget(self.groupbox)
 
         #레이아웃 성정부분(오른쪽)
