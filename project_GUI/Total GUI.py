@@ -1,7 +1,5 @@
 # -*- coding:utf-8 -*-
 import sys
-
-import self as self
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5 import QtGui
@@ -99,7 +97,8 @@ class InputProject(QDialog):
         self.pushButton1= QPushButton("ADD")
         self.pushButton1.clicked.connect(self.pushButtonClicked)
 
-        self.mycom.addItems(["1교시","2교시","3교시","4교시","5교시","6교시","7교시","8교시","9교시","1자_1","1자_2","2자_1","2자_2","새벽"])
+        #self.mycom.addItems(["1교시","2교시","3교시","4교시","5교시","6교시","7교시","8교시","9교시","1자_1","1자_2","2자_1","2자_2","새벽"])
+        self.mycom.addItems(["1시간","2시간","3시간","4시간"])
 
         self.endline.setDate(QDate.currentDate())
         self.endline.setCalendarPopup(True)
@@ -225,7 +224,7 @@ class MyWindow(QWidget):
         self.setupUI()
 
     def setupUI(self):
-        self.setGeometry(0, 0, 1200, 600)
+        self.setGeometry(0, 0, 1300, 700)
         self.setWindowTitle("SASA smart scheduler")
 
         self.title = QLabel()
@@ -276,4 +275,5 @@ class MyWindow(QWidget):
         self.setLayout(total_layout)
 
 if __name__ == "__main__":
-    DataAbsence(1)
+    exist =1
+    DataAbsence(exist)
