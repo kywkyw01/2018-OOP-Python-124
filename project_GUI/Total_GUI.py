@@ -6,14 +6,18 @@ from PyQt5 import QtGui
 
 
 task_list = []
+# 0번째 index에 이름
+# 1번째 index에 시간
+# 2번째 index에 과제 마감
+# 3번째 index에 요일
 ProfileData = []
 
-def Right(ID,PS):         # 구현해주세요!! 달빛학사 아이디 비번 확인함수
+def Right(User_id, User_pw):         # 구현해주세요!! 달빛학사 아이디 비번 확인함수
     return 1
 
 #시작전에 login logout
 def DataAbsence(exist):     #exist==1 로그인 절차 x     exist==0 로그인 절차 필요
-    if exist ==1:
+    if exist == 1:
         app = QApplication(sys.argv)
         mywindow = MyWindow()
         mywindow.show()
@@ -28,7 +32,7 @@ def DataAbsence(exist):     #exist==1 로그인 절차 x     exist==0 로그인 
             window.show()
             ap.exec()
             flag = Right(ProfileData[0],ProfileData[1]) #아이디 비번이 맞는지 확인 맞으면 1 틀리면 0
-            if flag ==1:
+            if flag:
                 Login = False
             else:
                 Login = True
@@ -51,26 +55,26 @@ class SignIn(QDialog):
         self.setWindowTitle("Sign_In")
 
         self.ID = QLabel("ID :")
-        self.PS = QLabel("PS :")
+        self.PW = QLabel("PW :")
         self.ID_input = QLineEdit()
-        self.PS_input = QLineEdit()
+        self.PW_input = QLineEdit()
         self.SignIn = QPushButton("SignIn")
 
         self.SignIn.clicked.connect(self.SignInClicked)
 
         layout = QGridLayout()
         layout.addWidget(self.ID, 0,0)
-        layout.addWidget(self.PS, 1,0)
+        layout.addWidget(self.PW, 1,0)
         layout.addWidget(self.ID_input, 0,1)
-        layout.addWidget(self.PS_input ,1,1)
+        layout.addWidget(self.PW_input ,1,1)
         layout.addWidget(self.SignIn , 2, 0)
         self.setLayout(layout)
 
     def SignInClicked(self):
         self.ID_data = self.ID_input.text()
-        self.PS_data = self.PS_input.text()
+        self.PW_data = self.PW_input.text()
         ProfileData.append(self.ID_data)
-        ProfileData.append(self.PS_data)
+        ProfileData.append(self.PW_data)
         self.close()
 
 
@@ -119,7 +123,18 @@ class InputProject(QDialog):
         self.SpendTime = self.mycom.currentText()
         d_list = self.endline.date().toString().split(' ')
         self.deadline = [d_list[3], d_list[1], d_list[2]]
+        self.day = self.endline.date().dayOfWeek()  # 월요일을 1로 기준하여 요일을 숫자로 return
         self.close()
+
+    def closeEvent(self, QCloseEvent):
+        '''
+        추후 작업 통해 그냥 close하면 버그 발생하는 오류 수정할 것
+        :param QCloseEvent: 
+        :return:
+        '''
+        self.close()
+
+
 
 
 
@@ -156,17 +171,18 @@ class MyTable(QWidget):
 
     @pyqtSlot()
     def __add_clicked(self):
+        add = InputProject()
+        add.exec_()
         row_count = self.table.rowCount()
-        self.table.setRowCount(row_count+1)
+        self.table.setRowCount(row_count + 1)
         ckbox = QCheckBox()
         self.table.setCellWidget(row_count, 0, ckbox)
-
-        add = InputProject()
-        add.exec()
         self.table.setItem(row_count, 1, QTableWidgetItem(add.name))
         self.table.setItem(row_count, 2, QTableWidgetItem(add.SpendTime))
-        self.table.setItem(row_count, 3, QTableWidgetItem(str(add.deadline[0]) + '년 ' + str(add.deadline[1]) + '월 ' + str(add.deadline[2]) + '일'))
-        task_list.append([add.name, add.SpendTime, [int(add.deadline[0]), int(add.deadline[1]), int(add.deadline[2])]])
+        self.table.setItem(row_count, 3, QTableWidgetItem(
+            str(add.deadline[0]) + '년 ' + str(add.deadline[1]) + '월 ' + str(add.deadline[2]) + '일'))
+        task_list.append(
+            [add.name, add.SpendTime, [int(add.deadline[0]), int(add.deadline[1]), int(add.deadline[2])], add.day])
         # print(task_list)
         # print(self.table.item(0, 2).text()[0:2])
         return
@@ -214,6 +230,10 @@ class MyTable(QWidget):
                                           [int(self.table.item(idx, 3).text()[0:4]),
                                            int(self.table.item(idx, 3).text()[6:8]),
                                            int(self.table.item(idx, 3).text()[10:12])]])
+        else:
+            pass
+            # "체크를 한 뒤 버튼을 클릭해주세요!" 메시지 출력해야 함
+
 
 
 
@@ -275,5 +295,5 @@ class MyWindow(QWidget):
         self.setLayout(total_layout)
 
 if __name__ == "__main__":
-    exist =1
+    exist = 1
     DataAbsence(exist)
