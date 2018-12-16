@@ -360,7 +360,7 @@ class MyTable(QWidget):
 
     def __to_table(self, row_count):
         self.table_widget.setItem(task_list[row_count][4], task_list[row_count][3] - 1, QTableWidgetItem(task_list[row_count][0]))
-
+        printsc.sctab[task_list[row_count][4]][task_list[row_count][3]] = task_list[row_count][0]
         self.table.removeRow(row_count)
         del task_list[row_count]
 
