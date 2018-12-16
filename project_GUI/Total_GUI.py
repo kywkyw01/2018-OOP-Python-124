@@ -13,6 +13,8 @@ task_list = []
 # 4번째 index에 교시
 ProfileData = {}  # 유저 데이터 담고있는 딕셔너리
 
+
+
 def Right(User_id, User_pw):         # 구현해주세요!! 달빛학사 아이디 비번 확인함수
     return 1
 
@@ -183,6 +185,7 @@ class MyTable(QWidget):
         totablebutton = QPushButton()
         self.table.setCellWidget(row_count, 0, ckbox1)
         self.table.setCellWidget(row_count, 1, totablebutton)
+
         self.table.setItem(row_count, 2, QTableWidgetItem(add.name))
         self.table.setItem(row_count, 3, QTableWidgetItem(add.SpendTime))
         self.table.setItem(row_count, 4, QTableWidgetItem(
@@ -347,6 +350,15 @@ class MyWindow(QWidget):
         total_layout.addWidget(self.title)
         total_layout.addLayout(under_layout)
         self.setLayout(total_layout)
+
+    def update_table(self, table):
+        for idx in range(7):
+            for day in range(14):
+                item = table[day][idx]
+                if item == 'empty':
+                    pass
+                else:
+                    self.table_widget.setItem(idx, day, item)
 
 if __name__ == "__main__":
     exist = 1
