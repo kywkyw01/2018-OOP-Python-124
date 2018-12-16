@@ -77,44 +77,6 @@ class SignIn(QDialog):
         ProfileData.append(self.PW_data)
         self.close()
 
-class Project_Select(QDialog):
-    def __init__(self):
-        super().__init__()
-        self.setupUI()
-    def setupUI(self):
-        self.setGeometry(1100, 200, 300, 200)
-        self.setWindowTitle('Select Mode')
-
-        self.Mode2 = QPushButton("내가 원하는 곳에 배치")
-        self.Mode1 = QPushButton("알고리즘이 원하는 곳에 배치")
-
-        self.Mode1.clicked().connect(self.mode1clicked)
-        self.Mode2.clicked().connect(self.mode2clicked)
-
-    def mode1clicked(self):
-        add = InputProject1()
-        add.exec_()
-        row_count = self.table.rowCount()
-        self.table.setRowCount(row_count + 1)
-        ckbox = QCheckBox()
-        self.table.setCellWidget(row_count, 0, ckbox)
-        self.table.setItem(row_count, 1, QTableWidgetItem(add.name))
-        self.table.setItem(row_count, 2, QTableWidgetItem(add.SpendTime))
-        self.table.setItem(row_count, 3, QTableWidgetItem(
-            str(add.deadline[0]) + '년 ' + str(add.deadline[1]) + '월 ' + str(add.deadline[2]) + '일'))
-        task_list.append(
-            [add.name, add.SpendTime, [int(add.deadline[0]), int(add.deadline[1]), int(add.deadline[2])], add.day])
-        self.state = 1
-        return
-
-    def mode2clicked(self):
-        add = InputProject2()
-        add.exec_()
-        self.state = 2
-
-
-
-
 #계획 추가 창 표시
 class InputProject1(QDialog):
     def __init__(self):
@@ -170,56 +132,6 @@ class InputProject1(QDialog):
         '''
         self.close()
 
-class InputProject2(QDialog):
-    def __init__(self):
-        super().__init__()
-        self.setupUI()
-
-    def setupUI(self):
-        self.setGeometry(1100, 200, 300, 200)
-        self.setWindowTitle("ADD Project")
-
-        label1 = QLabel("Name: ")
-        label2 = QLabel("Day: ")
-        label3 = QLabel("Period: ")
-
-        self.lineEdit1 = QLineEdit()
-        self.day = QComboBox()
-        self.period = QComboBox()
-
-        self.pushButton1= QPushButton("ADD")
-        self.pushButton1.clicked.connect(self.pushButtonClicked)
-
-        self.day.addItems(['월', '화', '수', '목', '금', '토', '일'])
-        self.period.addItems(["1교시","2교시","3교시","4교시","5교시","6교시","7교시","8교시","9교시","1자_1","1자_2","2자_1","2자_2","새벽"])
-
-        layout = QGridLayout()
-        layout.addWidget(label1, 0, 0)
-        layout.addWidget(self.lineEdit1, 0, 1)
-        layout.addWidget(self.pushButton1, 0, 2)
-        layout.addWidget(label2, 1, 0)
-        layout.addWidget(self.day, 1, 1)
-        layout.addWidget(label3, 2, 0)
-        layout.addWidget(self.period, 2, 1)
-
-        self.setLayout(layout)
-
-    def pushButtonClicked(self):
-        self.name = self.lineEdit1.text()
-        self.SpendTime = self.mycom.currentText()
-        self.period = self.period.currentText()
-        self.day = self.endline.date().dayOfWeek()  # 월요일을 1로 기준하여 요일을 숫자로 return
-
-        self.close()
-
-    def closeEvent(self, QCloseEvent):
-        '''
-        추후 작업 통해 그냥 close하면 버그 발생하는 오류 수정할 것
-        :param QCloseEvent:
-        :return:
-        '''
-        self.close()
-
 
 
 class MyTable(QWidget):
@@ -231,9 +143,9 @@ class MyTable(QWidget):
 
     def __make_table(self):
         self.table.setSelectionMode(QAbstractItemView.SingleSelection)
-        self.table.setColumnCount(4)
+        self.table.setColumnCount(5)
         self.table.setRowCount(0)
-        self.table.setHorizontalHeaderLabels(['', '이름', '시간', 'Deadline'])
+        self.table.setHorizontalHeaderLabels(['삭제?', '시간표로', '이름', '시간', 'Deadline'])
         self.table.resizeColumnsToContents()
         self.table.resizeRowsToContents()
         self.table.setEditTriggers(QAbstractItemView.NoEditTriggers)
@@ -249,13 +161,16 @@ class MyTable(QWidget):
         grid.addWidget(add_button, 0, 0)
         del_button = QPushButton(" Del Schedule ")
         grid.addWidget(del_button, 0, 1)
+        to_schedule = QPushButton(" To Table ")
+        grid.addWidget(to_schedule, 0, 2)
         self.setLayout(vbox)
         add_button.clicked.connect(self.__add_clicked)
         del_button.clicked.connect(self.__del_clicked)
+        to_schedule.clicked.connect(self.__to_clicked)
 
     @pyqtSlot()
     def __add_clicked(self):
-        add = Project_Select()
+        add = InputProject1()
         add.exec_()
         row_count = self.table.rowCount()
         self.table.setRowCount(row_count + 1)
@@ -318,6 +233,54 @@ class MyTable(QWidget):
             pass
             # "체크를 한 뒤 버튼을 클릭해주세요!" 메시지 출력해야 함
 
+    def __to_clicked(self):
+        row_count = self.table.rowCount()
+        chk_count = 0
+        rem_list = []
+        if row_count != 0:
+            for idx in range(row_count):
+                item = self.table.cellWidget(idx, 1)
+                if item.isChecked():
+                    rem_list.append(idx)
+            if len(rem_list) != 0:
+                rem_list.sort()
+                rem_list.reverse()
+                for idx in range(len(rem_list)):
+                    self.table.removeRow(rem_list[idx])
+
+                    chk_count += 1
+        # print(rem_list)
+        row_count = self.table.rowCount()
+        if row_count and chk_count:
+            global task_list
+            task_list = []
+            # print(self.table.item(0, 3).text()[8])
+            for idx in range(row_count):
+                if self.table.item(idx, 3).text()[7] == '월':
+                    if self.table.item(idx, 3).text()[10] == '일':
+                        task_list.append([self.table.item(idx, 1).text(), self.table.item(idx, 2).text(),
+                                          [int(self.table.item(idx, 3).text()[0:4]),
+                                           int(self.table.item(idx, 3).text()[6]),
+                                           int(self.table.item(idx, 3).text()[9])]])
+                    else:
+                        task_list.append([self.table.item(idx, 1).text(), self.table.item(idx, 2).text(),
+                                          [int(self.table.item(idx, 3).text()[0:4]),
+                                           int(self.table.item(idx, 3).text()[6]),
+                                           int(self.table.item(idx, 3).text()[9:11])]])
+                else:
+                    if self.table.item(idx, 3).text()[11] == '일':
+                        task_list.append([self.table.item(idx, 1).text(), self.table.item(idx, 2).text(),
+                                          [int(self.table.item(idx, 3).text()[0:4]),
+                                           int(self.table.item(idx, 3).text()[6:8]),
+                                           int(self.table.item(idx, 3).text()[10])]])
+                    else:
+                        task_list.append([self.table.item(idx, 1).text(), self.table.item(idx, 2).text(),
+                                          [int(self.table.item(idx, 3).text()[0:4]),
+                                           int(self.table.item(idx, 3).text()[6:8]),
+                                           int(self.table.item(idx, 3).text()[10:12])]])
+        else:
+            pass
+            # "체크를 한 뒤 버튼을 클릭해주세요!" 메시지 출력해야 함
 
 
 
