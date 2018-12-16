@@ -8,6 +8,10 @@ from bs4 import BeautifulSoup as bs  # parsing library
 import datetime
 from copy import deepcopy
 
+# 출처
+# http://freeprog.tistory.com/333?category=716617
+# https://opentutorials.org/module/544
+# https://www.youtube.com/watch?v=OtqWefBqbxA&list=PL1eLKSeW1Baj72go6l3gg4C8TXRNUBdMo
 
 class sctable:
     def __init__(self, sctab = ''):
@@ -251,7 +255,7 @@ class InputProject1(QDialog):
 
         #self.mycom.addItems(["1교시","2교시","3교시","4교시","5교시","6교시","7교시","8교시","9교시","1자_1","1자_2","2자_1","2자_2","새벽"])
         self.mycom.addItems(["1시간","2시간","3시간","4시간"])
-        self.period.addItems(["필수 아님", "1교시","2교시","3교시","4교시","5교시","6교시","7교시","8교시","9교시","1자_1","1자_2","2자_1","2자_2","새벽"])
+        self.period.addItems(["필수 아님", "1교시","2교시","3교시","4교시","5교시","6교시","7교시","8교시","9교시","10교시","11교시","12교시","13교시","14교시"])
         self.endline.setDate(QDate.currentDate())
         self.endline.setCalendarPopup(True)
 
@@ -365,7 +369,7 @@ class MyTable(QWidget):
         self.table_widget.setItem(task_list[row_count][4], task_list[row_count][3] - 1, QTableWidgetItem(task_list[row_count][0]))
         printsc.sctab[task_list[row_count][4]][task_list[row_count][3]-1] = task_list[row_count][0]
         self.table.removeRow(row_count)
-        del task_list[row_count]
+        del task_list[row_count-1]
 
     def __del_clicked(self):
         row_count = self.table.rowCount()
@@ -455,7 +459,7 @@ class MyWindow(QWidget):
 
         self.table_widget =  QTableWidget(14,7)
         self.table_widget.setHorizontalHeaderLabels(["월","화","수","목","금","토","일"])
-        self.table_widget.setVerticalHeaderLabels(["1교시","2교시","3교시","4교시","5교시","6교시","7교시","8교시","9교시","1자_1","1자_2","2자_1","2자_2","새벽"])
+        self.table_widget.setVerticalHeaderLabels(["1교시","2교시","3교시","4교시","5교시","6교시","7교시","8교시","9교시","10교시","11교시","12교시","13교시","14교시"])
         # self.table_widget.resizeColumnsToContents()  # 아이템 길이에 맞춰서 크기 조정
         # self.table_widget.resizeRowsToContents()  # 아이템 길이에 맞춰서 크기 조정
         self.table_widget.setEditTriggers(QAbstractItemView.NoEditTriggers)  # 표를 임의로 수정 불가하게 만듬
