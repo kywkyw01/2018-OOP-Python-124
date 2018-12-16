@@ -8,6 +8,10 @@ from bs4 import BeautifulSoup as bs  # parsing library
 import datetime
 from copy import deepcopy
 
+# 출처
+# http://freeprog.tistory.com/333?category=716617
+# https://opentutorials.org/module/544
+# https://www.youtube.com/watch?v=OtqWefBqbxA&list=PL1eLKSeW1Baj72go6l3gg4C8TXRNUBdMo
 
 class sctable:
     def __init__(self, sctab = ''):
