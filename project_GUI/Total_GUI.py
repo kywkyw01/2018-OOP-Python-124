@@ -58,7 +58,7 @@ task_list = []
 # 1번째 index에 시간
 # 2번째 index에 과제 마감
 # 3번째 index에 요일
-
+task1_list = []
 
 ProfileData = {
     'id': '',
@@ -157,7 +157,7 @@ def Right(User_id, User_pw):         # 구현해주세요!! 달빛학사 아이�
                     if board[j][i] != '': todaysc.sctab[i][j] = board[j][i][0]
             printsc=deepcopy(todaysc)
             print(printsc.sctab)
-        return 1
+        return [1, printsc.sctab]
 
 #시작전에 login logout
 def DataAbsence(exist):     #exist==1 로그인 절차 x     exist==0 로그인 절차 필요
@@ -176,8 +176,9 @@ def DataAbsence(exist):     #exist==1 로그인 절차 x     exist==0 로그인 
             window.show()
             ap.exec()
             flag = Right(ProfileData['id'],ProfileData['password']) #아이디 비번이 맞는지 확인 맞으면 1 틀리면 0
-            if flag:
+            if flag[0]:
                 Login = False
+
             else:
                 print("Q")
                 Login = True
@@ -187,7 +188,7 @@ def DataAbsence(exist):     #exist==1 로그인 절차 x     exist==0 로그인 
                 }
 
         app = QApplication(sys.argv)
-        mywindow = MyWindow()
+        mywindow = MyWindow(flag[1])
         mywindow.show()
         app.exec()
 
@@ -250,7 +251,7 @@ class InputProject1(QDialog):
 
         #self.mycom.addItems(["1교시","2교시","3교시","4교시","5교시","6교시","7교시","8교시","9교시","1자_1","1자_2","2자_1","2자_2","새벽"])
         self.mycom.addItems(["1시간","2시간","3시간","4시간"])
-        self.period.addItems(["1교시","2교시","3교시","4교시","5교시","6교시","7교시","8교시","9교시","1자_1","1자_2","2자_1","2자_2","새벽"])
+        self.period.addItems(["필수 아님", "1교시","2교시","3교시","4교시","5교시","6교시","7교시","8교시","9교시","1자_1","1자_2","2자_1","2자_2","새벽"])
         self.endline.setDate(QDate.currentDate())
         self.endline.setCalendarPopup(True)
 
@@ -273,7 +274,10 @@ class InputProject1(QDialog):
         d_list = self.endline.date().toString().split(' ')
         self.deadline = [d_list[3], d_list[1], d_list[2]]
         self.day = self.endline.date().dayOfWeek()  # 월요일을 1로 기준하여 요일을 숫자로 return
-        self.per = int(self.period.currentText().replace("교시",""))-1
+        if self.period.currentText() == '필수 아님':
+            self.per = -1
+        else:
+            self.per = int(self.period.currentText().replace("교시",""))-1
         self.close()
 
     def closeEvent(self, QCloseEvent):
@@ -287,9 +291,10 @@ class InputProject1(QDialog):
 
 
 class MyTable(QWidget):
-    def __init__(self):
+    def __init__(self, table_widget):
         super().__init__()
         self.table = QTableWidget()
+        self.table_widget = table_widget
         self.__make_layout()
         self.__make_table()
 
@@ -313,12 +318,12 @@ class MyTable(QWidget):
         grid.addWidget(add_button, 0, 0)
         del_button = QPushButton(" Del Schedule ")
         grid.addWidget(del_button, 0, 1)
-        to_schedule = QPushButton(" To Table ")
+        to_schedule = QPushButton(" Make Table ")
         grid.addWidget(to_schedule, 0, 2)
         self.setLayout(vbox)
         add_button.clicked.connect(self.__add_clicked)
         del_button.clicked.connect(self.__del_clicked)
-        to_schedule.clicked.connect(self.__to_clicked)
+        to_schedule.clicked.connect(self.__make_clicked)
 
     @pyqtSlot()
     def __add_clicked(self):
@@ -330,13 +335,24 @@ class MyTable(QWidget):
         totablebutton = QPushButton()
         self.table.setCellWidget(row_count, 0, ckbox1)
         self.table.setCellWidget(row_count, 1, totablebutton)
-
+        totablebutton.clicked.connect(self.__to_table)
         self.table.setItem(row_count, 2, QTableWidgetItem(add.name))
         self.table.setItem(row_count, 3, QTableWidgetItem(add.SpendTime))
         self.table.setItem(row_count, 4, QTableWidgetItem(
             str(add.deadline[0]) + '년 ' + str(add.deadline[1]) + '월 ' + str(add.deadline[2]) + '일'))
-        self.table.setItem(row_count, 5, QTableWidgetItem(add.day))
-        self.table.setItem(row_count, 6, QTableWidgetItem(add.per))
+        rtm = datetime.datetime.now()  # 현재 시각
+        nowdate = datetime.date(rtm.year, rtm.month, rtm.day)
+        recentdate = datetime.date(int(add.deadline[0]), int(add.deadline[1]), int(add.deadline[2]))
+        delta = recentdate - nowdate
+        print(delta.days)
+        if delta.days < 0:
+            print("이미 마감된 과제입니다")
+            self.table.removeRow(row_count)
+            return
+        if  delta.days >= 7:
+            print("너무 먼 미래입니다")
+            self.table.removeRow(row_count)
+            return
         task_list.append(
             [add.name, add.SpendTime, [int(add.deadline[0]), int(add.deadline[1]), int(add.deadline[2])], add.day, add.per])
 
@@ -345,6 +361,11 @@ class MyTable(QWidget):
         # print(self.table.item(0, 2).text()[0:2])
         return
 
+    def __to_table(self, row_count):
+        self.table_widget.setItem(task_list[row_count][4], task_list[row_count][3] - 1, QTableWidgetItem(task_list[row_count][0]))
+
+        self.table.removeRow(row_count)
+        del task_list[row_count]
 
     def __del_clicked(self):
         row_count = self.table.rowCount()
@@ -392,7 +413,7 @@ class MyTable(QWidget):
             pass
             # "체크를 한 뒤 버튼을 클릭해주세요!" 메시지 출력해야 함
 
-    def __to_clicked(self):
+    def __make_clicked(self):
         row_count = self.table.rowCount()
         chk_count = 0
         rem_list = []
@@ -444,9 +465,12 @@ class MyTable(QWidget):
 
 # 메인 윈도우
 class MyWindow(QWidget):
-    def __init__(self):
+    def __init__(self, table):
+        self.table = table
+
         super().__init__()
         self.setupUI()
+        self.update_table()
 
     def setupUI(self):
         self.setGeometry(0, 0, 1300, 700)
@@ -469,7 +493,7 @@ class MyWindow(QWidget):
         # self.table_widget.resizeRowsToContents()  # 아이템 길이에 맞춰서 크기 조정
         self.table_widget.setEditTriggers(QAbstractItemView.NoEditTriggers)  # 표를 임의로 수정 불가하게 만듬
 
-        table = MyTable()
+        table = MyTable(self.table_widget)
 
         #레이아웃 설정부분(Groupbox)
         groupbox_layout = QVBoxLayout()
@@ -498,14 +522,16 @@ class MyWindow(QWidget):
         total_layout.addLayout(under_layout)
         self.setLayout(total_layout)
 
-    def update_table(self, table):
+    def update_table(self):
         for idx in range(7):
             for day in range(14):
-                item = table[day][idx]
+                item = self.table[day][idx]
+                print(self.table)
                 if item == 'empty':
                     pass
                 else:
-                    self.table_widget.setItem(idx, day, item)
+                    self.table_widget.setItem(day, idx, QTableWidgetItem(item))
+                    printsc.sctab[day][idx] = item
 
 if __name__ == "__main__":
     exist = 0
