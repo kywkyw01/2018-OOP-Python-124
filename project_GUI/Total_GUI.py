@@ -509,12 +509,9 @@ def autoschedule():
     for i in task_list:
         print(i)
         Flag = 0
-        print(i)
         for j in range(s+1,s+8):
-            print("BBBB")
             if Flag == 1: break
             for k in range(14):
-                print("CCCC")
                 if printsc.sctab[k][j%7] == 'empty':
                     print(i[0])
                     printsc.sctab[k][j%7] = i[0]
@@ -522,6 +519,7 @@ def autoschedule():
                     if i[1] == 0:
                         Flag = 1
                         break
+        print(printsc.sctab)
     return
 
 if __name__ == "__main__":
