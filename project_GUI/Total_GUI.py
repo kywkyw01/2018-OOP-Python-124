@@ -10,7 +10,7 @@ task_list = []
 # 1번째 index에 시간
 # 2번째 index에 과제 마감
 # 3번째 index에 요일
-ProfileData = []
+ProfileData = {}  # 유저 데이터 담고있는 딕셔너리
 
 def Right(User_id, User_pw):         # 구현해주세요!! 달빛학사 아이디 비번 확인함수
     return 1
@@ -77,11 +77,46 @@ class SignIn(QDialog):
         ProfileData.append(self.PW_data)
         self.close()
 
+class Project_Select(QDialog):
+    def __init__(self):
+        super().__init__()
+        self.setupUI()
+    def setupUI(self):
+        self.setGeometry(1100, 200, 300, 200)
+        self.setWindowTitle('Select Mode')
+
+        self.Mode2 = QPushButton("내가 원하는 곳에 배치")
+        self.Mode1 = QPushButton("알고리즘이 원하는 곳에 배치")
+
+        self.Mode1.clicked().connect(self.mode1clicked)
+        self.Mode2.clicked().connect(self.mode2clicked)
+
+    def mode1clicked(self):
+        add = InputProject1()
+        add.exec_()
+        row_count = self.table.rowCount()
+        self.table.setRowCount(row_count + 1)
+        ckbox = QCheckBox()
+        self.table.setCellWidget(row_count, 0, ckbox)
+        self.table.setItem(row_count, 1, QTableWidgetItem(add.name))
+        self.table.setItem(row_count, 2, QTableWidgetItem(add.SpendTime))
+        self.table.setItem(row_count, 3, QTableWidgetItem(
+            str(add.deadline[0]) + '년 ' + str(add.deadline[1]) + '월 ' + str(add.deadline[2]) + '일'))
+        task_list.append(
+            [add.name, add.SpendTime, [int(add.deadline[0]), int(add.deadline[1]), int(add.deadline[2])], add.day])
+        self.state = 1
+        return
+
+    def mode2clicked(self):
+        add = InputProject2()
+        add.exec_()
+        self.state = 2
+
 
 
 
 #계획 추가 창 표시
-class InputProject(QDialog):
+class InputProject1(QDialog):
     def __init__(self):
         super().__init__()
         self.setupUI()
@@ -124,6 +159,7 @@ class InputProject(QDialog):
         d_list = self.endline.date().toString().split(' ')
         self.deadline = [d_list[3], d_list[1], d_list[2]]
         self.day = self.endline.date().dayOfWeek()  # 월요일을 1로 기준하여 요일을 숫자로 return
+
         self.close()
 
     def closeEvent(self, QCloseEvent):
@@ -134,7 +170,55 @@ class InputProject(QDialog):
         '''
         self.close()
 
+class InputProject2(QDialog):
+    def __init__(self):
+        super().__init__()
+        self.setupUI()
 
+    def setupUI(self):
+        self.setGeometry(1100, 200, 300, 200)
+        self.setWindowTitle("ADD Project")
+
+        label1 = QLabel("Name: ")
+        label2 = QLabel("Day: ")
+        label3 = QLabel("Period: ")
+
+        self.lineEdit1 = QLineEdit()
+        self.day = QComboBox()
+        self.period = QComboBox()
+
+        self.pushButton1= QPushButton("ADD")
+        self.pushButton1.clicked.connect(self.pushButtonClicked)
+
+        self.day.addItems(['월', '화', '수', '목', '금', '토', '일'])
+        self.period.addItems(["1교시","2교시","3교시","4교시","5교시","6교시","7교시","8교시","9교시","1자_1","1자_2","2자_1","2자_2","새벽"])
+
+        layout = QGridLayout()
+        layout.addWidget(label1, 0, 0)
+        layout.addWidget(self.lineEdit1, 0, 1)
+        layout.addWidget(self.pushButton1, 0, 2)
+        layout.addWidget(label2, 1, 0)
+        layout.addWidget(self.day, 1, 1)
+        layout.addWidget(label3, 2, 0)
+        layout.addWidget(self.period, 2, 1)
+
+        self.setLayout(layout)
+
+    def pushButtonClicked(self):
+        self.name = self.lineEdit1.text()
+        self.SpendTime = self.mycom.currentText()
+        self.period = self.period.currentText()
+        self.day = self.endline.date().dayOfWeek()  # 월요일을 1로 기준하여 요일을 숫자로 return
+
+        self.close()
+
+    def closeEvent(self, QCloseEvent):
+        '''
+        추후 작업 통해 그냥 close하면 버그 발생하는 오류 수정할 것
+        :param QCloseEvent:
+        :return:
+        '''
+        self.close()
 
 
 
@@ -171,7 +255,7 @@ class MyTable(QWidget):
 
     @pyqtSlot()
     def __add_clicked(self):
-        add = InputProject()
+        add = Project_Select()
         add.exec_()
         row_count = self.table.rowCount()
         self.table.setRowCount(row_count + 1)
