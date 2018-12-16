@@ -238,7 +238,7 @@ class InputProject1(QDialog):
 
         label1 = QLabel("Name: ")
         label2 = QLabel("Spend time: ")
-        label3 = QLabel("Deadline: ")
+        label3 = QLabel("Deadline 또는 일자: ")
         label4 = QLabel("(필수라면) 몇교시? :")
 
         self.lineEdit1 = QLineEdit()
@@ -270,7 +270,7 @@ class InputProject1(QDialog):
 
     def pushButtonClicked(self):
         self.name = self.lineEdit1.text()
-        self.SpendTime = self.mycom.currentText()
+        self.SpendTime = int(self.mycom.currentText().replace("시간", ""))
         d_list = self.endline.date().toString().split(' ')
         self.deadline = [d_list[3], d_list[1], d_list[2]]
         self.day = self.endline.date().dayOfWeek()  # 월요일을 1로 기준하여 요일을 숫자로 return
@@ -363,7 +363,7 @@ class MyTable(QWidget):
 
     def __to_table(self, row_count):
         self.table_widget.setItem(task_list[row_count][4], task_list[row_count][3] - 1, QTableWidgetItem(task_list[row_count][0]))
-        printsc.sctab[task_list[row_count][4]][task_list[row_count][3]] = task_list[row_count][0]
+        printsc.sctab[task_list[row_count][4]][task_list[row_count][3]-1] = task_list[row_count][0]
         self.table.removeRow(row_count)
         del task_list[row_count]
 
@@ -414,52 +414,19 @@ class MyTable(QWidget):
             # "체크를 한 뒤 버튼을 클릭해주세요!" 메시지 출력해야 함
 
     def __make_clicked(self):
-        row_count = self.table.rowCount()
-        chk_count = 0
-        rem_list = []
-        if row_count != 0:
-            for idx in range(row_count):
-                item = self.table.cellWidget(idx, 2)
-                if item.isChecked():
-                    rem_list.append(idx)
-            if len(rem_list) != 0:
-                rem_list.sort()
-                rem_list.reverse()
-                for idx in range(len(rem_list)):
-                    self.table.removeRow(rem_list[idx])
-                    chk_count += 1
-        # print(rem_list)
-        row_count = self.table.rowCount()
-        if row_count and chk_count:
-            global task_list
-            task_list = []
-            # print(self.table.item(0, 3).text()[8])
-            for idx in range(row_count):
-                if self.table.item(idx, 4).text()[7] == '월':
-                    if self.table.item(idx, 4).text()[10] == '일':
-                        task_list.append([self.table.item(idx, 2).text(), self.table.item(idx, 3).text(),
-                                          [int(self.table.item(idx, 4).text()[0:4]),
-                                           int(self.table.item(idx, 4).text()[6]),
-                                           int(self.table.item(idx, 4).text()[9])]])
-                    else:
-                        task_list.append([self.table.item(idx, 2).text(), self.table.item(idx, 3).text(),
-                                          [int(self.table.item(idx, 4).text()[0:4]),
-                                           int(self.table.item(idx, 4).text()[6]),
-                                           int(self.table.item(idx, 4).text()[9:11])]])
+        autoschedule()
+        print(printsc.sctab)
+        for i in range(14):
+            for j in range(7):
+                item = printsc.sctab[i][j]
+                if item == 'empty':
+                    pass
                 else:
-                    if self.table.item(idx, 4).text()[11] == '일':
-                        task_list.append([self.table.item(idx, 2).text(), self.table.item(idx, 3).text(),
-                                          [int(self.table.item(idx, 4).text()[0:4]),
-                                           int(self.table.item(idx, 4).text()[6:8]),
-                                           int(self.table.item(idx, 4).text()[10])]])
-                    else:
-                        task_list.append([self.table.item(idx, 2).text(), self.table.item(idx, 3).text(),
-                                          [int(self.table.item(idx, 4).text()[0:4]),
-                                           int(self.table.item(idx, 4).text()[6:8]),
-                                           int(self.table.item(idx, 4).text()[10:12])]])
-        else:
-            pass
-            # "체크를 한 뒤 버튼을 클릭해주세요!" 메시지 출력해야 함
+                    self.table_widget.setItem(i, j, QTableWidgetItem(item))
+        task_list = []
+        row_count = self.table.rowCount()
+        for i in range(row_count-1, -1, -1):
+            self.table.removeRow(i)
 
 
 
@@ -526,21 +493,31 @@ class MyWindow(QWidget):
         for idx in range(7):
             for day in range(14):
                 item = self.table[day][idx]
-                print(self.table)
                 if item == 'empty':
                     pass
                 else:
                     self.table_widget.setItem(day, idx, QTableWidgetItem(item))
                     printsc.sctab[day][idx] = item
 
+
+
 def autoschedule():
+    print("AFEF")
+    rtm=datetime.datetime.now()
+    nowdate=datetime.date(rtm.year, rtm.month, rtm.day)
+    s=rtm.weekday()
     for i in task_list:
+        print(i)
         Flag = 0
-        for j in range(7):
+        print(i)
+        for j in range(s+1,s+8):
+            print("BBBB")
             if Flag == 1: break
             for k in range(14):
-                if printsc.sctab[k][j] == 'empty':
-                    printsc.sctab[k][j] = i[0]
+                print("CCCC")
+                if printsc.sctab[k][j%7] == 'empty':
+                    print(i[0])
+                    printsc.sctab[k][j%7] = i[0]
                     i[1] -= 1
                     if i[1] == 0:
                         Flag = 1
