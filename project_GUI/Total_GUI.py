@@ -533,6 +533,20 @@ class MyWindow(QWidget):
                     self.table_widget.setItem(day, idx, QTableWidgetItem(item))
                     printsc.sctab[day][idx] = item
 
+def autoschedule():
+    for i in task_list:
+        Flag = 0
+        for j in range(7):
+            if Flag == 1: break
+            for k in range(14):
+                if printsc.sctab[k][j] == 'empty':
+                    printsc.sctab[k][j] = i[0]
+                    i[1] -= 1
+                    if i[1] == 0:
+                        Flag = 1
+                        break
+    return
+
 if __name__ == "__main__":
     exist = 0
     DataAbsence(exist)
