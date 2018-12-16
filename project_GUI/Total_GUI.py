@@ -8,6 +8,11 @@ from bs4 import BeautifulSoup as bs  # parsing library
 import datetime
 from copy import deepcopy
 
+# pip3 install -U beautifulsoup4
+# pip3 install -U requests
+'''
+https://github.com/kadragon/oop_python_ex/blob/master/student_result/04_parsing/parsing_29.py
+'''
 # 출처
 # http://freeprog.tistory.com/333?category=716617
 # https://opentutorials.org/module/544
