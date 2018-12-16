@@ -120,10 +120,10 @@ def Right(User_id, User_pw):         # 구현해주세요!! 달빛학사 아이�
 
         # 만들어진 로그인 데이터를 이용해서, 로그인을 시도한다.
         login_req = s.post('https://go.sasa.hs.kr/auth/login/', data=LOGIN_INFO)
-        print("A")
         if login_req.status_code != 200:
             return 0
         else:
+            print("접속됨")
             SI = input().split()
             # get_timetable = s.get('https://go.sasa.hs.kr/timetable/search_new/teacher?target='+teacher_name, data={'target': ''}).text
             get_timetable = s.get(
@@ -165,7 +165,6 @@ def Right(User_id, User_pw):         # 구현해주세요!! 달빛학사 아이�
                 for j in range(6):
                     if board[j][i] != '': todaysc.sctab[i][j] = board[j][i][0]
             printsc=deepcopy(todaysc)
-            print(printsc.sctab)
         return [1, printsc.sctab]
 
 #시작전에 login logout
@@ -189,7 +188,6 @@ def DataAbsence(exist):     #exist==1 로그인 절차 x     exist==0 로그인 
                 Login = False
 
             else:
-                print("Q")
                 Login = True
                 ProfileData = {
                     'id': '',
@@ -353,7 +351,6 @@ class MyTable(QWidget):
         nowdate = datetime.date(rtm.year, rtm.month, rtm.day)
         recentdate = datetime.date(int(add.deadline[0]), int(add.deadline[1]), int(add.deadline[2]))
         delta = recentdate - nowdate
-        print(delta.days)
         if delta.days < 0:
             print("이미 마감된 과제입니다")
             self.table.removeRow(row_count)
@@ -424,7 +421,6 @@ class MyTable(QWidget):
 
     def __make_clicked(self):
         autoschedule()
-        print(printsc.sctab)
         for i in range(14):
             for j in range(7):
                 item = printsc.sctab[i][j]
@@ -511,24 +507,20 @@ class MyWindow(QWidget):
 
 
 def autoschedule():
-    print("AFEF")
     rtm=datetime.datetime.now()
     nowdate=datetime.date(rtm.year, rtm.month, rtm.day)
     s=rtm.weekday()
     for i in task_list:
-        print(i)
         Flag = 0
         for j in range(s+1,s+8):
             if Flag == 1: break
             for k in range(14):
                 if printsc.sctab[k][j%7] == 'empty':
-                    print(i[0])
                     printsc.sctab[k][j%7] = i[0]
                     i[1] -= 1
                     if i[1] == 0:
                         Flag = 1
                         break
-        print(printsc.sctab)
     return
 
 if __name__ == "__main__":
