@@ -48,11 +48,12 @@ def hwsort(alist):
                     alist[B], alist[B+1]= alist[B+1], alist[B]
 
 
-todaysc=sctable()
-printsc=sctable()
+todaysc=sctable() #고정테이블
+printsc=sctable() #유동테이블
 #배열접근: printsc.sctab[i][j]
 
 task_list = []
+
 # 0번째 index에 이름
 # 1번째 index에 시간
 # 2번째 index에 과제 마감
@@ -338,6 +339,8 @@ class MyTable(QWidget):
         self.table.setItem(row_count, 6, QTableWidgetItem(add.per))
         task_list.append(
             [add.name, add.SpendTime, [int(add.deadline[0]), int(add.deadline[1]), int(add.deadline[2])], add.day, add.per])
+
+
         # print(task_list)
         # print(self.table.item(0, 2).text()[0:2])
         return
