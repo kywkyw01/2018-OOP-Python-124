@@ -41,5 +41,13 @@ SASA인을 위한 일정 관리 프로그램 제작
 
 ## 10. 실행방법
 1. 아이디와 패스워드를 입력해 로그인한다.
-2. 
+2. 'Add Schedule' 버튼을 이용해 스케줄을 추가한다.
+3. 소요시간, Deadline 또는 일자, 필수일 경우 몇 교시인지 지정한다.
+4. 필수를 지정한 경우 '시간표로'버튼을 이용해 시간표로 넘긴다.
+5. 삭제를 원할 경우 'Delete' 버튼을 이용해 바꾼다.
+6. 'Make Table'버튼을 이용해 자동으로 스케줄을 채운다.
+
+*pip install pyqt5
+*pip install beautifulsoup4
+*pip install requests
 <hr>
