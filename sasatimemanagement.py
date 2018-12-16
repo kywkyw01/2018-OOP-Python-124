@@ -1,4 +1,5 @@
 import datetime
+from copy import deepcopy
 
 class sctable:
     def __init__(self, sctab = ''):
@@ -36,19 +37,21 @@ def hwsort(alist):
                     alist[B], alist[B+1] = alist[B+1], alist[B]
             else:
                 if alist[B].deadline[0]>alist[B+1].deadline[1]:
-                    alist[b], alist[B+1]= alist[B+1], alist[B]
+                    alist[B], alist[B+1]= alist[B+1], alist[B]
 
 
 
-def gethwtable():
-    return hwtable
+
 
 todaysc=sctable()
 for i in todaysc.sctab:
     for j in i:
         print(j, end=" ")
     print("")
-tomorrow=sctable()
+
+printsc=deepcopy(todaysc)
+
+
 
 recenthw=[]
 a=int(input())
@@ -58,7 +61,23 @@ for i in range(a):
 for i in recenthw:
     print(i.hwname, i.leadtime,'시간', i.deadline)
 
+for i in recenthw:
+    Flag=0
+    for j in range(14):
+        if Flag==1: break
+        for k in range(7):
+            if todaysc.sctab[j][k]=='empty':
+                print(j, k)
+                todaysc.sctab[j][k]=i.hwname
+                i.leadtime-=1
+                if i.leadtime==0:
+                    Flag=1
+                    break
 
+for i in todaysc.sctab:
+    for j in i:
+        print(j, end=" ")
+    print("")
 
 
 

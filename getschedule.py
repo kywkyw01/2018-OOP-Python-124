@@ -9,8 +9,8 @@ import tkinter
 
 # 로그인이 필요한 사이트 파싱을 위한 정보 저장
 LOGIN_INFO = {
-    'id': '',
-    'passwd': ''
+    'id': '1731',
+    'passwd': '1mybissasa!'
 }
 
 def find_classroom(cl_num):
@@ -74,22 +74,6 @@ def get_html(url):
 
     return response.text
 
-def sub_get_insert_time_and_press(url):
-    """
-    기사에서 기사 등록일과 언론사를 찾아 반환한다.
-    :param url: 기사 url
-    :return: 기사 등록일, 언론사
-    """
-    sub_html = get_html(url)  # get_html() 을 이용해서, 대상 기사에 접속 html tag 를 가져온다.
-    sub_soup = bs(sub_html, 'html.parser')  # bs4 parser 를 이용하여, 뽑아오기 쉽게 parsing 한다.
-
-    # <div class='sponser'> 안에 있는, <span class='t11'> 의 text 를 추출한다.
-    news_insert_time = sub_soup.select('div.sponsor span.t11')[0].getText().split()[1]
-
-    # <div class='press_logo'> 안에 있는, <a> 안에 있는 <img> 들 중에 첫번째[0] 요소의 title 을 가져온다.
-    news_press = sub_soup.select('div.press_logo a img')[0].get('title')
-
-    return news_insert_time, news_press
 
 def deco_classroom(classroom_number):
     classroom_number = classroom_number
@@ -149,8 +133,17 @@ with requests.Session() as s:
 
     # 만들어진 로그인 데이터를 이용해서, 로그인을 시도한다.
     login_req = s.post('https://go.sasa.hs.kr/auth/login/', data=LOGIN_INFO)
+
+    sub_html = get_html('https://go.sasa.hs.kr/timetable/search_new')  # get_html() 을 이용해서, 대상 기사에 접속 html tag 를 가져온다.
+    sub_soup = bs(sub_html, 'html.parser')  # bs4 parser 를 이용하여, 뽑아오기 쉽게 parsing 한다.
+
+    sch_link = sub_soup.select('div.box')
+
+    print(sch_link)
+
     teacher_name= input()
     get_timetable = s.get('https://go.sasa.hs.kr/timetable/search_new/teacher?target='+teacher_name, data={'target': ''}).text
+    #get_timetable = s.get('https://go.sasa.hs.kr/timetable/search_new/student?target=2-5%20방준형').text
     timetable_soup = bs(get_timetable, 'html.parser')
     tmp = timetable_soup.select('script')
     tmp = str(tmp).split('\n')
