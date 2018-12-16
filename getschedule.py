@@ -8,8 +8,8 @@ from bs4 import BeautifulSoup as bs  # parsing library
 
 # 로그인이 필요한 사이트 파싱을 위한 정보 저장
 LOGIN_INFO = {
-    'id': '1731',
-    'passwd': '10mybissasa!'
+    'id': 'LOGIN_INFO',
+    'passwd': 'LOGIN_PASSWORD'
 }
 
 
@@ -48,6 +48,8 @@ with requests.Session() as s:
 
     # 만들어진 로그인 데이터를 이용해서, 로그인을 시도한다.
     login_req = s.post('https://go.sasa.hs.kr/auth/login/', data=LOGIN_INFO)
+
+    print(login_req.status_code)
 
 
     SI= input().split()
