@@ -148,17 +148,19 @@ class InputProject1(QDialog):
         label1 = QLabel("Name: ")
         label2 = QLabel("Spend time: ")
         label3 = QLabel("Deadline: ")
+        label4 = QLabel("(필수라면) 몇교시? :")
 
         self.lineEdit1 = QLineEdit()
         self.mycom = QComboBox()
         self.endline = QDateEdit()
+        self.period = QComboBox()
 
         self.pushButton1= QPushButton("ADD")
         self.pushButton1.clicked.connect(self.pushButtonClicked)
 
         #self.mycom.addItems(["1교시","2교시","3교시","4교시","5교시","6교시","7교시","8교시","9교시","1자_1","1자_2","2자_1","2자_2","새벽"])
         self.mycom.addItems(["1시간","2시간","3시간","4시간"])
-
+        self.period.addItems(["1교시","2교시","3교시","4교시","5교시","6교시","7교시","8교시","9교시","1자_1","1자_2","2자_1","2자_2","새벽"])
         self.endline.setDate(QDate.currentDate())
         self.endline.setCalendarPopup(True)
 
@@ -170,6 +172,8 @@ class InputProject1(QDialog):
         layout.addWidget(self.mycom, 1, 1)
         layout.addWidget(label3, 2, 0)
         layout.addWidget(self.endline, 2, 1)
+        layout.addWidget(label4, 3, 0)
+        layout.addWidget(self.period, 3, 1)
 
         self.setLayout(layout)
 
@@ -179,7 +183,7 @@ class InputProject1(QDialog):
         d_list = self.endline.date().toString().split(' ')
         self.deadline = [d_list[3], d_list[1], d_list[2]]
         self.day = self.endline.date().dayOfWeek()  # 월요일을 1로 기준하여 요일을 숫자로 return
-
+        self.per = int(self.period.currentText().replace("교시",""))-1
         self.close()
 
     def closeEvent(self, QCloseEvent):
@@ -201,9 +205,9 @@ class MyTable(QWidget):
 
     def __make_table(self):
         self.table.setSelectionMode(QAbstractItemView.SingleSelection)
-        self.table.setColumnCount(5)
+        self.table.setColumnCount(7)
         self.table.setRowCount(0)
-        self.table.setHorizontalHeaderLabels(['삭제?', '시간표로', '이름', '시간', 'Deadline'])
+        self.table.setHorizontalHeaderLabels(['삭제?', '시간표로', '이름', '시간', 'Deadline', '요일', '교시'])
         self.table.resizeColumnsToContents()
         self.table.resizeRowsToContents()
         self.table.setEditTriggers(QAbstractItemView.NoEditTriggers)
@@ -232,14 +236,18 @@ class MyTable(QWidget):
         add.exec_()
         row_count = self.table.rowCount()
         self.table.setRowCount(row_count + 1)
-        ckbox = QCheckBox()
-        self.table.setCellWidget(row_count, 0, ckbox)
-        self.table.setItem(row_count, 1, QTableWidgetItem(add.name))
-        self.table.setItem(row_count, 2, QTableWidgetItem(add.SpendTime))
-        self.table.setItem(row_count, 3, QTableWidgetItem(
+        ckbox1 = QCheckBox()
+        totablebutton = QPushButton()
+        self.table.setCellWidget(row_count, 0, ckbox1)
+        self.table.setCellWidget(row_count, 1, totablebutton)
+        self.table.setItem(row_count, 2, QTableWidgetItem(add.name))
+        self.table.setItem(row_count, 3, QTableWidgetItem(add.SpendTime))
+        self.table.setItem(row_count, 4, QTableWidgetItem(
             str(add.deadline[0]) + '년 ' + str(add.deadline[1]) + '월 ' + str(add.deadline[2]) + '일'))
+        self.table.setItem(row_count, 5, QTableWidgetItem(add.day))
+        self.table.setItem(row_count, 6, QTableWidgetItem(add.per))
         task_list.append(
-            [add.name, add.SpendTime, [int(add.deadline[0]), int(add.deadline[1]), int(add.deadline[2])], add.day])
+            [add.name, add.SpendTime, [int(add.deadline[0]), int(add.deadline[1]), int(add.deadline[2])], add.day, add.per])
         # print(task_list)
         # print(self.table.item(0, 2).text()[0:2])
         return
@@ -267,26 +275,26 @@ class MyTable(QWidget):
             task_list = []
             # print(self.table.item(0, 3).text()[8])
             for idx in range(row_count):
-                if self.table.item(idx, 3).text()[7] == '월':
-                    if self.table.item(idx, 3).text()[10] == '일':
-                        task_list.append([self.table.item(idx, 1).text(), self.table.item(idx, 2).text(),
-                                          [int(self.table.item(idx, 3).text()[0:4]), int(self.table.item(idx, 3).text()[6]),
-                                           int(self.table.item(idx, 3).text()[9])]])
+                if self.table.item(idx, 4).text()[7] == '월':
+                    if self.table.item(idx, 4).text()[10] == '일':
+                        task_list.append([self.table.item(idx, 2).text(), self.table.item(idx, 3).text(),
+                                          [int(self.table.item(idx, 4).text()[0:4]), int(self.table.item(idx, 4).text()[6]),
+                                           int(self.table.item(idx, 4).text()[9])]])
                     else:
-                        task_list.append([self.table.item(idx, 1).text(), self.table.item(idx, 2).text(),
-                                          [int(self.table.item(idx, 3).text()[0:4]), int(self.table.item(idx, 3).text()[6]),
-                                           int(self.table.item(idx, 3).text()[9:11])]])
+                        task_list.append([self.table.item(idx, 2).text(), self.table.item(idx, 3).text(),
+                                          [int(self.table.item(idx, 4).text()[0:4]), int(self.table.item(idx, 4).text()[6]),
+                                           int(self.table.item(idx, 4).text()[9:11])]])
                 else:
-                    if self.table.item(idx, 3).text()[11] == '일':
-                        task_list.append([self.table.item(idx, 1).text(), self.table.item(idx, 2).text(),
-                                          [int(self.table.item(idx, 3).text()[0:4]),
-                                           int(self.table.item(idx, 3).text()[6:8]),
-                                           int(self.table.item(idx, 3).text()[10])]])
+                    if self.table.item(idx, 4).text()[11] == '일':
+                        task_list.append([self.table.item(idx, 2).text(), self.table.item(idx, 3).text(),
+                                          [int(self.table.item(idx, 4).text()[0:4]),
+                                           int(self.table.item(idx, 4).text()[6:8]),
+                                           int(self.table.item(idx, 4).text()[10])]])
                     else:
-                        task_list.append([self.table.item(idx, 1).text(), self.table.item(idx, 2).text(),
-                                          [int(self.table.item(idx, 3).text()[0:4]),
-                                           int(self.table.item(idx, 3).text()[6:8]),
-                                           int(self.table.item(idx, 3).text()[10:12])]])
+                        task_list.append([self.table.item(idx, 2).text(), self.table.item(idx, 3).text(),
+                                          [int(self.table.item(idx, 4).text()[0:4]),
+                                           int(self.table.item(idx, 4).text()[6:8]),
+                                           int(self.table.item(idx, 4).text()[10:12])]])
         else:
             pass
             # "체크를 한 뒤 버튼을 클릭해주세요!" 메시지 출력해야 함
@@ -297,7 +305,7 @@ class MyTable(QWidget):
         rem_list = []
         if row_count != 0:
             for idx in range(row_count):
-                item = self.table.cellWidget(idx, 1)
+                item = self.table.cellWidget(idx, 2)
                 if item.isChecked():
                     rem_list.append(idx)
             if len(rem_list) != 0:
@@ -305,7 +313,6 @@ class MyTable(QWidget):
                 rem_list.reverse()
                 for idx in range(len(rem_list)):
                     self.table.removeRow(rem_list[idx])
-
                     chk_count += 1
         # print(rem_list)
         row_count = self.table.rowCount()
@@ -314,28 +321,28 @@ class MyTable(QWidget):
             task_list = []
             # print(self.table.item(0, 3).text()[8])
             for idx in range(row_count):
-                if self.table.item(idx, 3).text()[7] == '월':
-                    if self.table.item(idx, 3).text()[10] == '일':
-                        task_list.append([self.table.item(idx, 1).text(), self.table.item(idx, 2).text(),
-                                          [int(self.table.item(idx, 3).text()[0:4]),
-                                           int(self.table.item(idx, 3).text()[6]),
-                                           int(self.table.item(idx, 3).text()[9])]])
+                if self.table.item(idx, 4).text()[7] == '월':
+                    if self.table.item(idx, 4).text()[10] == '일':
+                        task_list.append([self.table.item(idx, 2).text(), self.table.item(idx, 3).text(),
+                                          [int(self.table.item(idx, 4).text()[0:4]),
+                                           int(self.table.item(idx, 4).text()[6]),
+                                           int(self.table.item(idx, 4).text()[9])]])
                     else:
-                        task_list.append([self.table.item(idx, 1).text(), self.table.item(idx, 2).text(),
-                                          [int(self.table.item(idx, 3).text()[0:4]),
-                                           int(self.table.item(idx, 3).text()[6]),
-                                           int(self.table.item(idx, 3).text()[9:11])]])
+                        task_list.append([self.table.item(idx, 2).text(), self.table.item(idx, 3).text(),
+                                          [int(self.table.item(idx, 4).text()[0:4]),
+                                           int(self.table.item(idx, 4).text()[6]),
+                                           int(self.table.item(idx, 4).text()[9:11])]])
                 else:
-                    if self.table.item(idx, 3).text()[11] == '일':
-                        task_list.append([self.table.item(idx, 1).text(), self.table.item(idx, 2).text(),
-                                          [int(self.table.item(idx, 3).text()[0:4]),
-                                           int(self.table.item(idx, 3).text()[6:8]),
-                                           int(self.table.item(idx, 3).text()[10])]])
+                    if self.table.item(idx, 4).text()[11] == '일':
+                        task_list.append([self.table.item(idx, 2).text(), self.table.item(idx, 3).text(),
+                                          [int(self.table.item(idx, 4).text()[0:4]),
+                                           int(self.table.item(idx, 4).text()[6:8]),
+                                           int(self.table.item(idx, 4).text()[10])]])
                     else:
-                        task_list.append([self.table.item(idx, 1).text(), self.table.item(idx, 2).text(),
-                                          [int(self.table.item(idx, 3).text()[0:4]),
-                                           int(self.table.item(idx, 3).text()[6:8]),
-                                           int(self.table.item(idx, 3).text()[10:12])]])
+                        task_list.append([self.table.item(idx, 2).text(), self.table.item(idx, 3).text(),
+                                          [int(self.table.item(idx, 4).text()[0:4]),
+                                           int(self.table.item(idx, 4).text()[6:8]),
+                                           int(self.table.item(idx, 4).text()[10:12])]])
         else:
             pass
             # "체크를 한 뒤 버튼을 클릭해주세요!" 메시지 출력해야 함
@@ -371,7 +378,6 @@ class MyWindow(QWidget):
 
         table = MyTable()
 
-
         #레이아웃 설정부분(Groupbox)
         groupbox_layout = QVBoxLayout()
         groupbox_layout.addWidget(table)
@@ -400,5 +406,5 @@ class MyWindow(QWidget):
         self.setLayout(total_layout)
 
 if __name__ == "__main__":
-    exist = 0
+    exist = 1
     DataAbsence(exist)
