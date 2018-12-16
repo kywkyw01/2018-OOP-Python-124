@@ -8,11 +8,57 @@ from bs4 import BeautifulSoup as bs  # parsing library
 import datetime
 from copy import deepcopy
 
+
+class sctable:
+    def __init__(self, sctab = ''):
+        self.sctab=[['empty' for j in range(7)] for i in range(14)]
+
+class hwtable:
+    def __init__(self, hwname, leadtime, deadline):
+        self.hwname=hwname
+        self.deadline=deadline
+        self.leadtime=leadtime
+
+def getschedule ():
+    buff=input().split()
+    rtm=datetime.datetime.now() #현재 시각
+    nowdate=datetime.date(rtm.year, rtm.month, rtm.day)
+    recentdate=datetime.date(int(buff[2]), int(buff[3]), int(buff[4]))
+    delta=recentdate-nowdate
+    if delta.days<0:
+        print("이미 마감된 과제입니다")
+        return
+    if 14-rtm.weekday()<delta.days:
+        print("너무 먼 미래입니다")
+        return
+    recenthw.append(hwtable(buff[0], int(buff[1]), [int(buff[2]), int(buff[3]), int(buff[4])])) # 2:년 3:월 4:일
+    hwsort(recenthw)
+
+def hwsort(alist):
+    for A in range(len(alist)-1):
+        for B in range(len(alist)-1-A):
+            if alist[B].deadline[0]==alist[B+1].deadline[0] and alist[B].deadline[1]==alist[B+1].deadline[1]:
+                if alist[B].deadline[2]>alist[B+1].deadline[2]:
+                    alist[B], alist[B+1]=alist[B+1], alist[B]
+            elif alist[B].deadline[0]==alist[B+1].deadline[0]:
+                if alist[B].deadline[1]>alist[B+1].deadline[1]:
+                    alist[B], alist[B+1] = alist[B+1], alist[B]
+            else:
+                if alist[B].deadline[0]>alist[B+1].deadline[1]:
+                    alist[B], alist[B+1]= alist[B+1], alist[B]
+
+
+todaysc=sctable()
+printsc=sctable()
+#배열접근: printsc.sctab[i][j]
+
 task_list = []
 # 0번째 index에 이름
 # 1번째 index에 시간
 # 2번째 index에 과제 마감
 # 3번째 index에 요일
+
+
 ProfileData = {
     'id': '',
     'password': ''
@@ -21,6 +67,7 @@ LOGIN_INFO = {
     'id': '',
     'passwd': ''
 }
+
 
 def get_html(url):
     """
@@ -63,10 +110,50 @@ def Right(User_id, User_pw):         # 구현해주세요!! 달빛학사 아이�
         login_req = s.post('https://go.sasa.hs.kr/auth/login/', data=LOGIN_INFO)
         print("A")
         if login_req.status_code != 200:
-            print("B")
             return 0
         else:
-            print("C")
+            SI = input().split()
+            # get_timetable = s.get('https://go.sasa.hs.kr/timetable/search_new/teacher?target='+teacher_name, data={'target': ''}).text
+            get_timetable = s.get(
+                'https://go.sasa.hs.kr/timetable/search_new/student?target=' + SI[0] + '-' + SI[1] + '%20' + SI[2]).text
+            timetable_soup = bs(get_timetable, 'html.parser')
+            tmp = timetable_soup.select('script')
+            tmp = str(tmp).split('\n')
+            tmp = list(tmp)
+            tmp2 = []
+            tmp3 = []
+            board = [['', '', '', '', '', '', '', '', '', '', '', ''], ['', '', '', '', '', '', '', '', '', '', '', ''],
+                     ['', '', '', '', '', '', '', '', '', '', '', ''], ['', '', '', '', '', '', '', '', '', '', '', ''],
+                     ['', '', '', '', '', '', '', '', '', '', '', ''], ['', '', '', '', '', '', '', '', '', '', '', '']]
+            for i in tmp:
+                if "tar = " in i:
+                    tmp2.append(i)
+                if "$('#time" in i:
+                    tmp2.append(i)
+
+            for i in tmp2:
+                if "tar = " in i:
+                    i = i.split('"')[1].replace("<br />", " / ").split(" / ")[0:3]
+                    tmp3.append(i)
+                if "$('#time" in i:
+                    if "append(tar)" in i:
+                        i = i.split("'")[1].replace("#time", "").split("-")
+                        tmp3.extend(i)
+                    else:
+                        i = i.split("'")[4:0:-3]
+                        i[0] = i[0].replace(">", "").replace('</button");', "")
+                        pre_i = i[1].replace("#time", "").split("-")
+                        i[1] = pre_i[0]
+                        i.append(pre_i[1])
+                        tmp3.extend(i)
+            for i in range(0, len(tmp3), 3):
+                board[int(tmp3[i + 1]) - 1][int(tmp3[i + 2]) - 1] = tmp3[i]
+
+            for i in range(12):
+                for j in range(6):
+                    if board[j][i] != '': todaysc.sctab[i][j] = board[j][i][0]
+            printsc=deepcopy(todaysc)
+            print(printsc.sctab)
         return 1
 
 #시작전에 login logout
@@ -406,5 +493,5 @@ class MyWindow(QWidget):
         self.setLayout(total_layout)
 
 if __name__ == "__main__":
-    exist = 1
+    exist = 0
     DataAbsence(exist)
